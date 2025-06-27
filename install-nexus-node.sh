@@ -26,7 +26,7 @@ sudo mkdir -p "$INSTALL_DIR"
 sudo mkdir -p "$CONFIG_DIR"
 
 echo "⬇️ Nexus CLI 다운로드 중..."
-sudo wget -q -O "$INSTALL_DIR/nexus" "$BINARY_URL"
+sudo wget -q -L -O "$INSTALL_DIR/nexus" "$BINARY_URL"
 sudo chmod +x "$INSTALL_DIR/nexus"
 
 echo "🧾 Node ID를 ~/.nexus/config.json 에 저장..."
