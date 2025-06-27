@@ -12,7 +12,7 @@ fi
 
 NODE_ID=$1
 INSTALL_DIR="/opt/nexus-cli"
-SERVICE_NAME="nexus-node-${NODE_ID}"
+SERVICE_NAME="nexus-node"
 CONFIG_DIR="/root/.nexus"
 CONFIG_FILE="${CONFIG_DIR}/config.json"
 BINARY_URL="https://github.com/nexus-xyz/nexus-cli/releases/latest/download/nexus-linux-amd64"
