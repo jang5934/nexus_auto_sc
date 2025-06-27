@@ -46,7 +46,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c '${INSTALL_DIR}/nexus start --node-id=$NODE_ID'
+ExecStart=${INSTALL_DIR}/nexus start --node-id=$NODE_ID
 WorkingDirectory=${INSTALL_DIR}
 Restart=always
 RestartSec=5
