@@ -15,7 +15,7 @@ INSTALL_DIR="/opt/nexus-cli"
 SERVICE_NAME="nexus-node"
 CONFIG_DIR="/root/.nexus"
 CONFIG_FILE="${CONFIG_DIR}/config.json"
-BINARY_URL="https://github.com/nexus-xyz/nexus-cli/releases/latest/download/nexus-linux-amd64"
+BINARY_URL="https://github.com/nexus-xyz/nexus-cli/releases/download/v0.8.13/nexus-network-linux-x86_64"
 
 echo "📦 종속성 설치..."
 sudo apt update -y
