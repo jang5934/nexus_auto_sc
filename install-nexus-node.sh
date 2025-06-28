@@ -1,36 +1,40 @@
 #!/bin/bash
 
-# 사용법: bash install-nexus.sh <NODE_ID>
+# 사용법: bash install-nexus-node.sh <NODE_ID>
+# 예시: bash install-nexus-node.sh 8078010
+
 set -e
 
 if [ -z "$1" ]; then
-  echo "❌ Node ID를 입력하세요. 예: bash install-nexus.sh 8078010"
+  echo "❌ Node ID를 입력하세요. 예: bash install-nexus-node.sh 8078010"
   exit 1
 fi
 
 NODE_ID=$1
 INSTALL_DIR="/opt/nexus-cli"
-CONFIG_DIR="/root/.nexus"
-CONFIG_FILE="${CONFIG_DIR}/config.json"
 BINARY_URL="https://github.com/nexus-xyz/nexus-cli/releases/download/v0.8.13/nexus-network-linux-x86_64"
+BINARY_PATH="${INSTALL_DIR}/nexus"
 
-echo "📦 종속성 설치..."
+echo "📦 종속성 설치 중..."
 sudo apt update -y
-sudo apt install -y curl wget jq -qq
+sudo apt install -y curl wget jq
 
-echo "📁 디렉토리 생성..."
+# tmux 설치 여부 확인
+if ! command -v tmux &> /dev/null; then
+  echo "📦 tmux가 설치되어 있지 않아 설치를 진행합니다..."
+  sudo apt install -y tmux
+else
+  echo "✅ tmux가 이미 설치되어 있습니다."
+fi
+
+echo "📁 디렉토리 생성 중..."
 sudo mkdir -p "$INSTALL_DIR"
-sudo mkdir -p "$CONFIG_DIR"
 
-echo "⬇️ Nexus CLI 다운로드 중..."
-sudo wget -q -O "$INSTALL_DIR/nexus" "$BINARY_URL"
-sudo chmod +x "$INSTALL_DIR/nexus"
+echo "⬇️ Nexus CLI 바이너리 다운로드 중..."
+sudo wget -q -L -O "$BINARY_PATH" "$BINARY_URL"
+sudo chmod +x "$BINARY_PATH"
 
-echo "🧾 config.json 저장..."
-sudo bash -c "cat > $CONFIG_FILE" <<EOF
-{
-  "node_id": "$NODE_ID"
-}
-EOF
+echo "🚀 tmux 세션으로 노드 실행 중..."
+tmux new -d -s node$NODE_ID "$BINARY_PATH start --node-id=$NODE_ID"
 
-echo "✅ 설치 완료"
+echo "✅ 설치 및 실행 완료! tmux 세션 이름: node$NODE_ID"
