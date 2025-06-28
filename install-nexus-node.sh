@@ -37,4 +37,4 @@ sudo chmod +x "$BINARY_PATH"
 echo "🚀 tmux 세션으로 노드 실행 중..."
 tmux new -d -s node$NODE_ID "$BINARY_PATH start --node-id=$NODE_ID"
 
-echo "✅ 설치 및 실행 완료! tmux 세션 이름: node$NODE_ID"
+echo "✅ 설치 및 실행 완료! tmux 세션 이름: nexus-node"
