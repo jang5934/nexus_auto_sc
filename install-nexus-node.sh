@@ -25,7 +25,7 @@ fi
 # screen 세션 생성 및 명령 실행
 echo "🚀 screen 세션($SESSION_NAME)에서 Nexus 노드 실행 시작..."
 screen -dmS "$SESSION_NAME" bash -c "
-curl -s https://cli.nexus.xyz/ | sh && \
+NONINTERACTIVE=1 curl -s https://cli.nexus.xyz/ | sh && \
 source ~/.bashrc && \
 nexus-network start --node-id=$NODE_ID
 "
