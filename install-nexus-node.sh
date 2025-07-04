@@ -1,40 +1,36 @@
 #!/bin/bash
 
-# 사용법: bash install-nexus-node.sh <NODE_ID>
-# 예시: bash install-nexus-node.sh 8078010
+# 사용법: bash install-and-run-nexus.sh <NODE_ID>
+# 예시: bash install-and-run-nexus.sh 8078010
 
 set -e
 
 if [ -z "$1" ]; then
-  echo "❌ Node ID를 입력하세요. 예: bash install-nexus-node.sh 8078010"
+  echo "❌ Node ID를 입력하세요. 예: bash install-and-run-nexus.sh 8078010"
   exit 1
 fi
 
 NODE_ID=$1
-INSTALL_DIR="/opt/nexus-cli"
-BINARY_URL="https://github.com/nexus-xyz/nexus-cli/releases/download/v0.8.13/nexus-network-linux-x86_64"
-BINARY_PATH="${INSTALL_DIR}/nexus"
+SESSION_NAME="nexus-node"
 
-echo "📦 종속성 설치 중..."
-sudo apt update -y
-sudo apt install -y curl wget jq
-
-# tmux 설치 여부 확인
-if ! command -v tmux &> /dev/null; then
-  echo "📦 tmux가 설치되어 있지 않아 설치를 진행합니다..."
-  sudo apt install -y tmux
+# screen 설치 확인
+if ! command -v screen &> /dev/null; then
+  echo "📦 screen이 설치되어 있지 않아 설치를 진행합니다..."
+  sudo apt update -y
+  sudo apt install -y screen
 else
-  echo "✅ tmux가 이미 설치되어 있습니다."
+  echo "✅ screen이 이미 설치되어 있습니다."
 fi
 
-echo "📁 디렉토리 생성 중..."
-sudo mkdir -p "$INSTALL_DIR"
+# screen 세션 생성 및 명령 실행
+echo "🚀 screen 세션($SESSION_NAME)에서 Nexus 노드 실행 시작..."
+screen -dmS "$SESSION_NAME" bash -c "
+curl -s https://cli.nexus.xyz/ | sh && \
+source ~/.bashrc && \
+nexus-network start --node-id=$NODE_ID
+"
 
-echo "⬇️ Nexus CLI 바이너리 다운로드 중..."
-sudo wget -q -L -O "$BINARY_PATH" "$BINARY_URL"
-sudo chmod +x "$BINARY_PATH"
-
-echo "🚀 tmux 세션으로 노드 실행 중..."
-tmux new -d -s nexus-node "while true; do $BINARY_PATH start --node-id=$NODE_ID >> /root/nexus-node.log 2>&1; echo '❗️프로세스 종료됨, 5초 후 재시작...' >> /root/nexus-node.log; sleep 5; done"
-
-echo "✅ 설치 및 실행 완료! tmux 세션 이름: nexus-node"
+echo "✅ 백그라운드 실행 완료. 다음 명령어로 세션 확인:"
+echo "  screen -ls"
+echo "다시 접속하려면:"
+echo "  screen -r $SESSION_NAME"
